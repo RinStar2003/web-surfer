@@ -8,16 +8,20 @@
 import UIKit
 import WebKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UISearchBarDelegate, WKNavigationDelegate, WKUIDelegate {
 
     @IBOutlet var mySearchBar: UISearchBar!
     @IBOutlet var myWebView: WKWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     
-        let myURL = URL(string:"https://www.apple.com")
+    
+        let myURL = URL(string:"https://www.google.com")
         let myRequest = URLRequest(url: myURL!)
+        
+        myWebView.navigationDelegate = self
+        myWebView.uiDelegate = self
+        
         myWebView.load(myRequest)
     }
 
@@ -34,6 +38,18 @@ class ViewController: UIViewController {
     @IBAction func next(_ sender: UIBarButtonItem) {
         if myWebView.canGoForward {
             myWebView.goForward()
+        }
+    }
+        
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        mySearchBar.resignFirstResponder()
+        
+        if let url = URL(string: mySearchBar.text!) {
+            
+            myWebView.load(URLRequest(url: url))
+            mySearchBar.text = nil
+        } else {
+            print("error")
         }
     }
     
